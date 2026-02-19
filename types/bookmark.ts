@@ -49,7 +49,7 @@ export function parseNotionPage(page: any): Bookmark {
         summary = line.replace(/^(Summary:|要約:)\s*/, '');
       } else if (line.includes('Key Points:') || line.includes('キーポイント:')) {
         const pointsText = line.replace(/^(Key Points:|キーポイント:)\s*/, '');
-        keyPoints = pointsText.split(';').map(p => p.trim()).filter(p => p);
+        keyPoints = pointsText.split(';').map((p: string) => p.trim()).filter((p: string) => p);
       } else if (line.includes('Sentiment:') || line.includes('感情分析:')) {
         const sentimentText = line.replace(/^(Sentiment:|感情分析:)\s*/, '').toLowerCase();
         if (sentimentText.includes('positive') || sentimentText.includes('ポジティブ')) {
