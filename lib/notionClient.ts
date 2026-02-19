@@ -39,6 +39,11 @@ export async function getBookmarks(
       throw new Error('Notion client not initialized - check NOTION_TWITTER_KEY environment variable');
     }
     
+    // デバッグ: 環境変数が設定されているか確認
+    console.log(`Notion client initialized: ${!!notion}`);
+    console.log(`Parent page ID: ${parentPageId}`);
+    console.log(`Limit: ${limit}`);
+    
     // 親ページの子ブロックを取得（ページネーション対応）
     let allPages: any[] = [];
     let hasMore = true;

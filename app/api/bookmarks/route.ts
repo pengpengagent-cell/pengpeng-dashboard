@@ -36,13 +36,29 @@ export async function GET(request: NextRequest) {
       try {
         source = 'notion';
         console.log(`Attempting to fetch from Notion API with env vars: ${notionEnvVars.join(', ')}`);
-        bookmarks = await getBookmarks(undefined, limit);
-        console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
+        
+        // タイムアウト設定を追加
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒タイムアウト
+        
+        try {
+          bookmarks = await getBookmarks(undefined, limit);
+          console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
+        } finally {
+          clearTimeout(timeoutId);
+        }
       } catch (error) {
         source = 'mock (notion error)';
         errorDetails = error;
         console.error('Error fetching from Notion API:', error);
         console.error('Error details:', error instanceof Error ? error.message : String(error));
+        
+        // タイムアウトエラーの場合
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.error('Notion API request timed out after 10 seconds');
+          errorDetails = 'Request timeout - Notion API took too long to respond';
+        }
+        
         bookmarks = await getMockBookmarks();
       }
     }
