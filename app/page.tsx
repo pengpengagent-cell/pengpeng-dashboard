@@ -24,21 +24,29 @@ async function getAINews(): Promise<NewsItem[]> {
       const date = file.replace('ai-news-', '').replace('.md', '');
 
       // Parse major news items (## 主要ニュース section)
-      const majorNewsMatch = content.match(/## 主要ニュース\n([\s\S]*?)(?=\n##|\n*$)/);
+      const majorNewsMatch = content.match(
+        /## 主要ニュース\n([\s\S]*?)(?=\n##|\n*$)/
+      );
       let majorNews: NewsItem[] = [];
       if (majorNewsMatch) {
         const items = majorNewsMatch[1].split(/### \d+\./).filter(Boolean);
         majorNews = items.map((item: string) => {
           const titleMatch = item.match(/\*\*(.+?)\*\*/);
-          const title = titleMatch ? titleMatch[1].replace(/\*\*/g, '').trim() : 'Untitled';
-          const desc = titleMatch ? item.replace(titleMatch[0], '').trim() : item.trim();
+          const title = titleMatch
+            ? titleMatch[1].replace(/\*\*/g, '').trim()
+            : 'Untitled';
+          const desc = titleMatch
+            ? item.replace(titleMatch[0], '').trim()
+            : item.trim();
           return { title, content: desc.substring(0, 200) };
         });
       }
 
       news.push({
         title: `AI News Daily — ${date}`,
-        content: majorNews.map((n: NewsItem) => `**${n.title}**: ${n.content}`).join('\n\n')
+        content: majorNews
+          .map((n: NewsItem) => `**${n.title}**: ${n.content}`)
+          .join('\n\n'),
       });
     }
 
@@ -94,11 +102,10 @@ export default async function Home() {
         </div>
 
         <footer className="mt-12 text-center text-slate-400 text-sm">
-          <p>
-            Powered by PengPeng • AI Agent running on OpenClaw
-          </p>
+          <p>Powered by PengPeng • AI Agent running on OpenClaw</p>
           <p className="mt-2">
-            Last updated: {new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}
+            Last updated:{' '}
+            {new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}
           </p>
         </footer>
       </div>
