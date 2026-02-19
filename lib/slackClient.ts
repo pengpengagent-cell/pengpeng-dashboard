@@ -126,19 +126,37 @@ export async function getLatestCronMessage(job: CronJob): Promise<{
   status: 'success' | 'failure' | 'unknown';
 } | null> {
   try {
-    const messages = await getChannelHistory(job.channel, 5);
+    const messages = await getChannelHistory(job.channel, 10);
     
-    // Filter messages that might be from this cron job
-    const relevantMessages = messages.filter(msg => {
+    // First, try to find a message that specifically mentions this job
+    const jobSpecificMessages = messages.filter(msg => {
       const text = msg.text || '';
-      return text.toLowerCase().includes(job.name.toLowerCase()) ||
-             text.includes('✅') ||
-             text.includes('❌');
+      const jobNameLower = job.name.toLowerCase();
+      const textLower = text.toLowerCase();
+      
+      // Check for exact job name match
+      if (jobNameLower.includes('ai news') && textLower.includes('ai news')) {
+        return true;
+      }
+      if (jobNameLower.includes('workspace') && textLower.includes('workspace')) {
+        return true;
+      }
+      if (jobNameLower.includes('openclaw') && textLower.includes('openclaw')) {
+        return true;
+      }
+      if (jobNameLower.includes('morning') && textLower.includes('morning')) {
+        return true;
+      }
+      if (jobNameLower.includes('learning') && textLower.includes('learning')) {
+        return true;
+      }
+      
+      // Generic check for job name in message
+      return textLower.includes(jobNameLower);
     });
     
-    if (relevantMessages.length === 0 && messages.length > 0) {
-      // If no specific job message, use the latest message
-      const latest = messages[0];
+    if (jobSpecificMessages.length > 0) {
+      const latest = jobSpecificMessages[0];
       return {
         message: latest.text || '',
         timestamp: latest.ts || '',
@@ -146,8 +164,9 @@ export async function getLatestCronMessage(job: CronJob): Promise<{
       };
     }
     
-    if (relevantMessages.length > 0) {
-      const latest = relevantMessages[0];
+    // If no job-specific message found, use the latest message
+    if (messages.length > 0) {
+      const latest = messages[0];
       return {
         message: latest.text || '',
         timestamp: latest.ts || '',

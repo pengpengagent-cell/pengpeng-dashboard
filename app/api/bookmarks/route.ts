@@ -10,20 +10,30 @@ export async function GET(request: NextRequest) {
     const tag = searchParams.get('tag') || '';
     const limit = parseInt(searchParams.get('limit') || '100');
     const includeStats = searchParams.get('stats') === 'true';
+    const debug = searchParams.get('debug') === 'true';
 
     console.log(`Fetching bookmarks with tag: "${tag}", limit: ${limit}`);
 
     let bookmarks;
+    let source = 'unknown';
+    let errorDetails: any = null;
     
     if (isDevelopment || !process.env.NOTION_TWITTER_KEY) {
       // 開発環境またはNotionキーがない場合はモックデータを使用
+      source = 'mock (development or missing key)';
       console.log('Using mock data for bookmarks');
+      console.log(`NODE_ENV: ${process.env.NODE_ENV}, NOTION_TWITTER_KEY exists: ${!!process.env.NOTION_TWITTER_KEY}`);
       bookmarks = await getMockBookmarks();
     } else {
       // 本番環境: Notion APIからデータを取得
       try {
+        source = 'notion';
+        console.log('Attempting to fetch from Notion API...');
         bookmarks = await getBookmarks(undefined, limit);
+        console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
       } catch (error) {
+        source = 'mock (notion error)';
+        errorDetails = error;
         console.error('Error fetching from Notion API, falling back to mock data:', error);
         bookmarks = await getMockBookmarks();
       }
@@ -41,8 +51,23 @@ export async function GET(request: NextRequest) {
       filters: {
         tag,
         limit
-      }
+      },
+      source,
+      environment: process.env.NODE_ENV || 'unknown',
+      notionKeyExists: !!process.env.NOTION_TWITTER_KEY
     };
+
+    // デバッグ情報を含める場合
+    if (debug) {
+      responseData.debug = {
+        source,
+        environment: process.env.NODE_ENV,
+        notionKeyExists: !!process.env.NOTION_TWITTER_KEY,
+        notionKeyPrefix: process.env.NOTION_TWITTER_KEY ? 
+          process.env.NOTION_TWITTER_KEY.substring(0, 10) + '...' : 'none',
+        error: errorDetails ? String(errorDetails) : null
+      };
+    }
 
     // 統計情報を含める場合
     if (includeStats) {
