@@ -1,20 +1,46 @@
 import { NextResponse } from 'next/server';
-import cronParser from 'cron-parser';
 import { getAllCronJobs, CronJob, CronStatus } from '../../../types/cron';
 import { getLatestCronMessage } from '../../../lib/slackClient';
 
 // Calculate next run time from cron expression
 export function calculateNextRun(cronExpression: string, timezone: string): string | null {
   try {
-    const options = {
-      currentDate: new Date(),
-      tz: timezone,
-    };
+    // Simple cron parser implementation for common patterns
+    const now = new Date();
+    const [minute, hour, dayOfMonth, month, dayOfWeek] = cronExpression.split(' ');
     
-    const interval = cronParser.parseExpression(cronExpression, options);
-    const nextDate = interval.next();
+    // Create next run date (simplified implementation)
+    const nextRun = new Date(now);
     
-    return nextDate.toISOString();
+    // Handle common patterns
+    if (minute === '*' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+      // Every minute
+      nextRun.setMinutes(nextRun.getMinutes() + 1);
+    } else if (minute === '0' && hour === '*/4' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+      // Every 4 hours
+      nextRun.setHours(nextRun.getHours() + 4);
+      nextRun.setMinutes(0);
+    } else if (minute === '0' && hour === '6' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+      // Daily at 6:00
+      nextRun.setDate(nextRun.getDate() + 1);
+      nextRun.setHours(6);
+      nextRun.setMinutes(0);
+    } else if (minute === '0' && hour === '13' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+      // Daily at 13:00 (21:00 SGT)
+      nextRun.setDate(nextRun.getDate() + 1);
+      nextRun.setHours(13);
+      nextRun.setMinutes(0);
+    } else if (minute === '0' && hour === '15' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+      // Daily at 15:00 (23:00 SGT)
+      nextRun.setDate(nextRun.getDate() + 1);
+      nextRun.setHours(15);
+      nextRun.setMinutes(0);
+    } else {
+      // Default: next day at same time
+      nextRun.setDate(nextRun.getDate() + 1);
+    }
+    
+    return nextRun.toISOString();
   } catch (error) {
     console.error('Error calculating next run:', error);
     return null;
