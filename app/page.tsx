@@ -1,65 +1,107 @@
-import Image from "next/image";
+import { readFile, readdir } from 'fs/promises';
+import path from 'path';
 
-export default function Home() {
+interface NewsItem {
+  title: string;
+  content: string;
+}
+
+async function getAINews(): Promise<NewsItem[]> {
+  try {
+    const memoryDir = path.join(process.cwd(), '../memory');
+    const files: string[] = await readdir(memoryDir);
+    const aiNewsFiles = files
+      .filter((f: string) => f.startsWith('ai-news-'))
+      .sort()
+      .reverse()
+      .slice(0, 5);
+
+    const news: NewsItem[] = [];
+
+    for (const file of aiNewsFiles) {
+      const filePath = path.join(memoryDir, file);
+      const content = await readFile(filePath, 'utf-8');
+      const date = file.replace('ai-news-', '').replace('.md', '');
+
+      // Parse major news items (## 主要ニュース section)
+      const majorNewsMatch = content.match(/## 主要ニュース\n([\s\S]*?)(?=\n##|\n*$)/);
+      let majorNews: NewsItem[] = [];
+      if (majorNewsMatch) {
+        const items = majorNewsMatch[1].split(/### \d+\./).filter(Boolean);
+        majorNews = items.map((item: string) => {
+          const titleMatch = item.match(/\*\*(.+?)\*\*/);
+          const title = titleMatch ? titleMatch[1].replace(/\*\*/g, '').trim() : 'Untitled';
+          const desc = titleMatch ? item.replace(titleMatch[0], '').trim() : item.trim();
+          return { title, content: desc.substring(0, 200) };
+        });
+      }
+
+      news.push({
+        title: `AI News Daily — ${date}`,
+        content: majorNews.map((n: NewsItem) => `**${n.title}**: ${n.content}`).join('\n\n')
+      });
+    }
+
+    return news;
+  } catch (error) {
+    console.error('Error loading AI news:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const news = await getAINews();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            🐧 PengPeng AI News Dashboard
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-slate-300 text-lg">
+            Latest AI & Tech News from Learning Sessions
           </p>
+        </header>
+
+        <div className="grid gap-6">
+          {news.length === 0 ? (
+            <div className="bg-slate-800/50 rounded-lg p-8 text-center">
+              <p className="text-slate-300 text-xl">
+                No AI news data available yet.
+              </p>
+              <p className="text-slate-400 mt-4">
+                Check back after the next AI News Daily cron run (21:00 SGT).
+              </p>
+            </div>
+          ) : (
+            news.map((item, index) => (
+              <article
+                key={index}
+                className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all"
+              >
+                <h2 className="text-xl font-semibold text-purple-400 mb-4">
+                  {item.title}
+                </h2>
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-slate-200 whitespace-pre-line leading-relaxed">
+                    {item.content}
+                  </p>
+                </div>
+              </article>
+            ))
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <footer className="mt-12 text-center text-slate-400 text-sm">
+          <p>
+            Powered by PengPeng • AI Agent running on OpenClaw
+          </p>
+          <p className="mt-2">
+            Last updated: {new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore' })}
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }
