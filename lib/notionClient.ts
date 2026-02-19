@@ -2,9 +2,30 @@ import { Client } from '@notionhq/client';
 import { Bookmark, parseNotionPage } from '../types/bookmark';
 
 // Notionクライアントの初期化
-const notion = new Client({
-  auth: process.env.NOTION_TWITTER_KEY,
-});
+// 複数の環境変数名を試す
+function getNotionApiKey(): string | undefined {
+  const possibleKeys = [
+    'NOTION_TWITTER_KEY',
+    'NOTION_API_KEY', 
+    'NOTION_KEY',
+    'NOTION_TOKEN'
+  ];
+  
+  for (const key of possibleKeys) {
+    const value = process.env[key];
+    if (value && value.trim().length > 0) {
+      console.log(`Using Notion API key from environment variable: ${key}`);
+      return value;
+    }
+  }
+  
+  console.log('No Notion API key found in environment variables');
+  console.log('Available environment variables:', Object.keys(process.env).filter(k => k.includes('NOTION')));
+  return undefined;
+}
+
+const notionApiKey = getNotionApiKey();
+const notion = notionApiKey ? new Client({ auth: notionApiKey }) : null;
 
 // ブックマークを取得する関数
 export async function getBookmarks(
@@ -13,6 +34,10 @@ export async function getBookmarks(
 ): Promise<Bookmark[]> {
   try {
     console.log(`Fetching bookmarks from parent page: ${parentPageId}`);
+    
+    if (!notion) {
+      throw new Error('Notion client not initialized - check NOTION_TWITTER_KEY environment variable');
+    }
     
     // 親ページの子ブロックを取得（ページネーション対応）
     let allPages: any[] = [];

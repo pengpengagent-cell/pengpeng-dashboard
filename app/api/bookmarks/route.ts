@@ -19,13 +19,14 @@ export async function GET(request: NextRequest) {
     let errorDetails: any = null;
     
     // 環境変数の詳細チェック
-    const notionKey = process.env.NOTION_TWITTER_KEY;
     const nodeEnv = process.env.NODE_ENV;
     const isDev = nodeEnv === 'development';
     
-    console.log(`Environment check: NODE_ENV=${nodeEnv}, NOTION_TWITTER_KEY exists=${!!notionKey}, length=${notionKey?.length || 0}`);
+    // 利用可能なNotion関連環境変数をチェック
+    const notionEnvVars = Object.keys(process.env).filter(k => k.includes('NOTION'));
+    console.log(`Environment check: NODE_ENV=${nodeEnv}, Notion env vars: ${notionEnvVars.join(', ')}`);
     
-    if (isDev || !notionKey) {
+    if (isDev || notionEnvVars.length === 0) {
       // 開発環境またはNotionキーがない場合はモックデータを使用
       source = `mock (${isDev ? 'development' : 'missing key'})`;
       console.log(`Using mock data: ${source}`);
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
       // 本番環境: Notion APIからデータを取得
       try {
         source = 'notion';
-        console.log(`Attempting to fetch from Notion API with key length: ${notionKey.length}`);
+        console.log(`Attempting to fetch from Notion API with env vars: ${notionEnvVars.join(', ')}`);
         bookmarks = await getBookmarks(undefined, limit);
         console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
       } catch (error) {
