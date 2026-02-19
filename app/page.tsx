@@ -77,12 +77,28 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <header className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            🐧 PengPeng AI News Dashboard v2
-          </h1>
-          <p className="text-slate-300 text-lg">
-            Latest AI & Tech News with Search, Filters, and Categories
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                🐧 PengPeng AI News Dashboard v2
+              </h1>
+              <p className="text-slate-300 text-lg">
+                Latest AI & Tech News with Search, Filters, and Categories
+              </p>
+            </div>
+            
+            <div className="flex gap-2">
+              <a
+                href="/cron-status"
+                className="px-4 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition-all flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Cron Status
+              </a>
+            </div>
+          </div>
         </header>
 
         {/* 検索・フィルター・ソートコントロール */}
