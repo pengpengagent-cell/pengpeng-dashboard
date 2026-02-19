@@ -18,23 +18,30 @@ export async function GET(request: NextRequest) {
     let source = 'unknown';
     let errorDetails: any = null;
     
-    if (isDevelopment || !process.env.NOTION_TWITTER_KEY) {
+    // 環境変数の詳細チェック
+    const notionKey = process.env.NOTION_TWITTER_KEY;
+    const nodeEnv = process.env.NODE_ENV;
+    const isDev = nodeEnv === 'development';
+    
+    console.log(`Environment check: NODE_ENV=${nodeEnv}, NOTION_TWITTER_KEY exists=${!!notionKey}, length=${notionKey?.length || 0}`);
+    
+    if (isDev || !notionKey) {
       // 開発環境またはNotionキーがない場合はモックデータを使用
-      source = 'mock (development or missing key)';
-      console.log('Using mock data for bookmarks');
-      console.log(`NODE_ENV: ${process.env.NODE_ENV}, NOTION_TWITTER_KEY exists: ${!!process.env.NOTION_TWITTER_KEY}`);
+      source = `mock (${isDev ? 'development' : 'missing key'})`;
+      console.log(`Using mock data: ${source}`);
       bookmarks = await getMockBookmarks();
     } else {
       // 本番環境: Notion APIからデータを取得
       try {
         source = 'notion';
-        console.log('Attempting to fetch from Notion API...');
+        console.log(`Attempting to fetch from Notion API with key length: ${notionKey.length}`);
         bookmarks = await getBookmarks(undefined, limit);
         console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
       } catch (error) {
         source = 'mock (notion error)';
         errorDetails = error;
-        console.error('Error fetching from Notion API, falling back to mock data:', error);
+        console.error('Error fetching from Notion API:', error);
+        console.error('Error details:', error instanceof Error ? error.message : String(error));
         bookmarks = await getMockBookmarks();
       }
     }

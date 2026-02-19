@@ -63,6 +63,22 @@ export async function getBookmarks(
     return bookmarks;
   } catch (error) {
     console.error('Error fetching bookmarks from Notion:', error);
+    console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error);
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    
+    // より詳細なエラー情報を提供
+    if (error instanceof Error) {
+      if (error.message.includes('API token') || error.message.includes('unauthorized')) {
+        console.error('API token error - check NOTION_TWITTER_KEY environment variable');
+      } else if (error.message.includes('permission') || error.message.includes('access')) {
+        console.error('Permission error - check if the integration has access to the page');
+      } else if (error.message.includes('rate limit') || error.message.includes('429')) {
+        console.error('Rate limit exceeded');
+      } else if (error.message.includes('not_found')) {
+        console.error('Page not found - check parent page ID');
+      }
+    }
+    
     throw error;
   }
 }
