@@ -1,0 +1,236 @@
+[
+  {
+    "id": "2026-02-19-india-ai-summit-2026-day-4",
+    "title": "India AI Summit 2026 Day 4",
+    "content": "- **場所**: デリー、インド\n- **日時**: 2026年2月19日\n- **ハイライト**:\n  - MetaのAlexandr Wang氏が「公共・民間セクターが同一チームであるべき」と呼びかけ\n  - OpenAIとTata Groupがパートナーシップを発表\n  - 大規模AIデータセンター建設計画（インド最大級）\n  - インドのAI戦略のグローバルデビュー\n**ソース**: NYTimes, Bloomberg, The Hindu",
+    "date": "2026-02-19",
+    "category": "news",
+    "tags": [
+      "Openai",
+      "Meta",
+      "India",
+      "Tata"
+    ],
+    "sources": [
+      "NYTimes, Bloomberg, The Hindu"
+    ]
+  },
+  {
+    "id": "2026-02-19-openai-×-tata-group提携",
+    "title": "OpenAI × Tata Group提携",
+    "content": "- **内容**: インドにおけるAIインフラ構築で提携\n- **規模**: 同国最大級のデータセンター計画\n- **意義**: OpenAIのグローバル展開戦略の重要な一歩\n**ソース**: Bloomberg\n---",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Openai",
+      "Tata"
+    ],
+    "sources": [
+      "Bloomberg"
+    ]
+  },
+  {
+    "id": "2026-02-19-peter-steinbergerプロフィール（forture）",
+    "title": "Peter Steinbergerプロフィール（Forture）",
+    "content": "- **内容**: OpenClaw創設者Peter Steinbergerのインタビュー\n- **キーポイント**:\n  - Sam AltmanとMark Zuckerbergの注目を集めたミレニアル開発者\n  - OpenAI入社後もOpenClawは「独立したオープンソース財団」として運用\n  - 「私は金のためにこれをやっていない」と発言\n**ソース**: Fortune.com",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Openclaw",
+      "Openai"
+    ],
+    "sources": [
+      "Fortune.com"
+    ]
+  },
+  {
+    "id": "2026-02-19-openclawセキュリティ脆弱性（cso-online）",
+    "title": "OpenClawセキュリティ脆弱性（CSO Online）",
+    "content": "- **内容**: Endor Labsが6件の脆弱性を発見・開示\n- **対応**: OpenClawメンテナが既に修正済み\n- **重要性**: 継続的なセキュリティ改善の必要性を強調\n**ソース**: CSO Online",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Openclaw"
+    ],
+    "sources": [
+      "CSO Online"
+    ]
+  },
+  {
+    "id": "2026-02-19-openclaw-\"privacy-nightmare\"（northeastern-university）",
+    "title": "OpenClaw \"Privacy Nightmare\"（Northeastern University）",
+    "content": "- **内容**: プライバシー上の懸念に関する議論\n- **視点**: 標準LLMでは不可能なタスクを実行可能（利点とリスクの両面）\n**ソース**: Northeastern University News",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Openclaw"
+    ],
+    "sources": [
+      "Northeastern University News"
+    ]
+  },
+  {
+    "id": "2026-02-19-openclaw-v2026.2.17リリース確認",
+    "title": "OpenClaw v2026.2.17リリース確認",
+    "content": "- **日付**: 2026年2月17日\n- **内容**: Anthropic Sonnet 4.6サポート + セキュリティ修正\n**ソース**: CyberSecurity News\n---",
+    "date": "2026-02-19",
+    "category": "model-release",
+    "tags": [
+      "Openclaw",
+      "Anthropic"
+    ],
+    "sources": [
+      "CyberSecurity News"
+    ]
+  },
+  {
+    "id": "2026-02-19-claudeの軍事利用拒否（npr）",
+    "title": "Claudeの軍事利用拒否（NPR）",
+    "content": "- **内容**: ペンタゴンがAnthropicとの提携を検討中\n- **問題**: Claudeの武器開発等の軍事応用を拒否\n- **影響**: ペンタゴンが提携見送りの可能性\n**ソース**: NPR",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Claude",
+      "Anthropic"
+    ],
+    "sources": [
+      "NPR"
+    ]
+  },
+  {
+    "id": "2026-02-19-npci-×-anthropic-パイロット（インド）",
+    "title": "NPCI × Anthropic パイロット（インド）",
+    "content": "- **内容**: Claudeを用いた「AI駆動ショッピング」実験\n- **機能**:\n  - BigBasket（食料品）やSwiggy（デリバリー）の注文をClaudeに代行\n  - UPI決済統合でシームレス取引\n- **コンセプト**: \"Agentic Commerce\"（エージェント型コマース）\n**ソース**: Business Today",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Claude",
+      "Anthropic",
+      "Agentic"
+    ],
+    "sources": [
+      "Business Today"
+    ]
+  },
+  {
+    "id": "2026-02-19-anthropic-×-openai-印度aiサミットでの対立",
+    "title": "Anthropic × OpenAI 印度AIサミットでの対立",
+    "content": "- **日時**: 2026年2月19日\n- **状況**: サミットで両社CEOが対立姿勢\n- **背景**: モデル市場での競争激化\n**ソース**: CNBC",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Anthropic",
+      "Openai"
+    ],
+    "sources": [
+      "CNBC"
+    ]
+  },
+  {
+    "id": "2026-02-19-広告なし戦略継続",
+    "title": "広告なし戦略継続",
+    "content": "- **内容**: Anthropicが広告モデルを採用しない意向\n- **理由**: 「間違った最適化」を避けるため\n- **焦点**: モデルの知能・安全性・信頼性\n**ソース**: CNBC\n---",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Anthropic"
+    ],
+    "sources": [
+      "CNBC"
+    ]
+  },
+  {
+    "id": "2026-02-19-saas時代の終焉、agentic時代の始まり",
+    "title": "SaaS時代の終焉、Agentic時代の始まり",
+    "content": "- **内容**: 2026年2月のイベントが「SaaS Era」の終わりと「Agentic Era」の始まりを象徴\n- **市場影響**: ソフトウェアセクターが約2兆ドルの時価総額を損失（1月〜2月）\n**ソース**: DigitalApplied.com",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [
+      "Saas",
+      "Agentic"
+    ],
+    "sources": [
+      "DigitalApplied.com"
+    ]
+  },
+  {
+    "id": "2026-02-19-勝者と敗者",
+    "title": "勝者と敗者",
+    "content": "- **敗者**: Salesforce, Adobe（ペリシート決済モデル崩壊）\n- **勝者**: Cloudflare（AIエージェントインフラ）\n- **新モデル**: \"Service as Software\"（AIがサービスそのものを提供）\n**ソース**: FinancialContent\n---",
+    "date": "2026-02-19",
+    "category": "other",
+    "tags": [],
+    "sources": [
+      "FinancialContent"
+    ]
+  },
+  {
+    "id": "2026-02-17-インドaiサミット2026が開催中",
+    "title": "インドAIサミット2026が開催中",
+    "content": "- **インドAIインパクトサミット2026**がニューデリーで開催中（2月16-20日）\n- ナレンドラ・モディ首相が開会し、インドを世界トップ3のAI大国にする目標を発表\n- 3,250人のスピーカー、500セッション、100カ国以上が参加\n- 医療分野で2つの国家イニシアチブを発表：\n  - SAHI（Strategy for Artificial Intelligence in Healthcare for India）\n  - BODH（Benchmarking Open Data Platform for Health AI）",
+    "date": "2026-02-17",
+    "category": "other",
+    "tags": [
+      "India"
+    ],
+    "sources": [
+      "Unknown"
+    ]
+  },
+  {
+    "id": "2026-02-17-aiと気候変動：グリーンウォッシング批判",
+    "title": "AIと気候変動：グリーンウォッシング批判",
+    "content": "- ガーディアン紙の報道：AIが気候変動解決に役立つという主張は「グリーンウォッシング」\n- 154の声明を分析した報告書によると、気候変動解決に役立つとされるAIのほとんどは機械学習（従来型AI）を指し、エネルギー消費の大きい生成AI（チャットボット、画像生成）ではない\n- Google GeminiやMicrosoft Copilotのような人気ツールが「実質的、検証可能、重要な」温室効果ガス削減につながった例は1つもない\n- 化石燃料会社が太陽光パネルへの投資を誇張するのと同様の手法と批判",
+    "date": "2026-02-17",
+    "category": "other",
+    "tags": [
+      "Gemini",
+      "Google",
+      "Microsoft"
+    ],
+    "sources": [
+      "Unknown"
+    ]
+  },
+  {
+    "id": "2026-02-17-openclaw創設者がopenaiに移籍",
+    "title": "OpenClaw創設者がOpenAIに移籍",
+    "content": "- **Peter Steinberger**（OpenClaw創設者）がOpenAIに移籍\n- OpenClawはオープンソース財団に移管され、OpenAIがサポートを継続\n- この動きは自律AIエージェント開発競争の激化を示唆\n- Moonshot AIがOpenClawを基盤とした「Kimi Claw」ブラウザベースAIエージェントプラットフォームを発表",
+    "date": "2026-02-17",
+    "category": "other",
+    "tags": [
+      "Openclaw",
+      "Openai"
+    ],
+    "sources": [
+      "Unknown"
+    ]
+  },
+  {
+    "id": "2026-02-17-anthropicと米国防総省の対立",
+    "title": "Anthropicと米国防総省の対立",
+    "content": "- 米国防総省がAnthropicとの関係断絶を検討\n- AnthropicがClaudeの使用に追加の保護措置を要求：\n  - 米国人の大規模監視への使用禁止\n  - 人間不在での兵器開発禁止\n- 国防総省は「法に違反しない限り」Claudeを使用したい意向\n- この対立はAIの軍事利用と倫理的制限の緊張関係を示す",
+    "date": "2026-02-17",
+    "category": "other",
+    "tags": [
+      "Claude",
+      "Anthropic"
+    ],
+    "sources": [
+      "Unknown"
+    ]
+  },
+  {
+    "id": "2026-02-17-infosysとanthropicが提携",
+    "title": "InfosysとAnthropicが提携",
+    "content": "- インドのIT大手InfosysがAnthropicと戦略的提携を発表\n- 通信、金融サービス、製造、ソフトウェア開発分野での高度なエンタープライズAIソリューション開発を目指す\n- 発表後、Infosys株価が約3%上昇",
+    "date": "2026-02-17",
+    "category": "other",
+    "tags": [
+      "Anthropic"
+    ],
+    "sources": [
+      "Unknown"
+    ]
+  }
+]

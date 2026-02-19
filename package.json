@@ -11,7 +11,8 @@
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "generate-news": "tsx scripts/generate-news-json.ts"
   },
   "dependencies": {
     "@notionhq/client": "^5.9.0",

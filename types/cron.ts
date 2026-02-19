@@ -49,7 +49,7 @@ export const CRON_JOBS: CronJob[] = [
     name: 'Workspace Backup',
     description: '毎日23:00 SGTに実行されるワークスペースバックアップ',
     schedule: '0 15 * * *', // 15:00 UTC (23:00 SGT)
-    channel: 'C0AEZV4RR0V', // #ai-news (same channel)
+    channel: 'C0AF5MM9SUB', // Pengu's DM
     timezone: 'Asia/Singapore',
   },
   {
@@ -57,7 +57,7 @@ export const CRON_JOBS: CronJob[] = [
     name: 'OpenClaw Monitor',
     description: '継続的なOpenClaw監視',
     schedule: '0 13 * * *', // 13:20 UTC (21:20 SGT)
-    channel: 'C0AEZV4RR0V', // #ai-news (same channel)
+    channel: 'C0AF5MM9SUB', // Pengu's DM
     timezone: 'Asia/Singapore',
   },
 ];
