@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { parseExpression } from 'cron-parser';
+import cronParser from 'cron-parser';
 import { getAllCronJobs, CronJob, CronStatus } from '../../../types/cron';
 import { getLatestCronMessage } from '../../../lib/slackClient';
 
@@ -11,7 +11,7 @@ export function calculateNextRun(cronExpression: string, timezone: string): stri
       tz: timezone,
     };
     
-    const interval = parseExpression(cronExpression, options);
+    const interval = cronParser.parseExpression(cronExpression, options);
     const nextDate = interval.next();
     
     return nextDate.toISOString();
