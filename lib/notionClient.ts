@@ -31,7 +31,7 @@ const notion = notionApiKey ? new Client({ auth: notionApiKey }) : null;
 export async function getBookmarks(
   parentPageId: string = process.env.NOTION_BOOKMARK_PARENT_ID || '2f50e463b39c80e5acbce06398b56558',
   limit: number = 100
-): Promise<Bookmark[]> {
+): Promise<{bookmarks: Bookmark[], debugInfo: any}> {
   try {
     console.log(`Fetching bookmarks from parent page: ${parentPageId}`);
     
@@ -48,6 +48,8 @@ export async function getBookmarks(
     let allPages: any[] = [];
     let hasMore = true;
     let startCursor: string | undefined = undefined;
+    let totalChildPages = 0;
+    let firstChildTitle = '';
     
     while (hasMore && allPages.length < limit) {
       const response = await notion.blocks.children.list({
@@ -68,7 +70,15 @@ export async function getBookmarks(
     
     // child_pageのみをフィルタリング
     const childPages = allPages.filter(block => block.type === 'child_page');
-    console.log(`Found ${childPages.length} child pages`);
+    totalChildPages = childPages.length;
+    console.log(`Found ${totalChildPages} child pages`);
+    
+    // 最初のchild_pageのタイトルを取得
+    if (childPages.length > 0) {
+      const firstChild = childPages[0];
+      firstChildTitle = firstChild.child_page?.title || 'No title';
+      console.log(`First child page title: ${firstChildTitle}`);
+    }
     
     // 各ページの詳細情報を取得
     const bookmarks: Bookmark[] = [];
@@ -90,7 +100,15 @@ export async function getBookmarks(
       }
     }
     
-    return bookmarks;
+    return {
+      bookmarks,
+      debugInfo: {
+        totalChildPages,
+        firstChildTitle,
+        parentPageId,
+        blocksApiSuccess: true
+      }
+    };
   } catch (error) {
     console.error('Error fetching bookmarks from Notion:', error);
     console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error);

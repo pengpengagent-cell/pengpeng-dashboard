@@ -42,8 +42,22 @@ export async function GET(request: NextRequest) {
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒タイムアウト
         
         try {
-          bookmarks = await getBookmarks(undefined, limit);
+          const result = await getBookmarks(undefined, limit);
+          bookmarks = result.bookmarks;
+          const debugInfo = result.debugInfo;
           console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
+          console.log(`Debug info: ${JSON.stringify(debugInfo)}`);
+          
+          // デバッグ情報を追加
+          if (debug) {
+            responseData.debug = {
+              ...responseData.debug,
+              childPages: debugInfo.totalChildPages,
+              firstChildTitle: debugInfo.firstChildTitle,
+              parentPageId: debugInfo.parentPageId,
+              blocksApiSuccess: debugInfo.blocksApiSuccess
+            };
+          }
         } finally {
           clearTimeout(timeoutId);
         }
