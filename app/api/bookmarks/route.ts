@@ -48,10 +48,10 @@ export async function GET(request: NextRequest) {
           console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
           console.log(`Debug info: ${JSON.stringify(debugInfo)}`);
           
-          // デバッグ情報を追加
+          // デバッグ情報を保存
           if (debug) {
-            responseData.debug = {
-              ...responseData.debug,
+            errorDetails = {
+              ...(errorDetails || {}),
               childPages: debugInfo.totalChildPages,
               firstChildTitle: debugInfo.firstChildTitle,
               parentPageId: debugInfo.parentPageId,
@@ -105,6 +105,14 @@ export async function GET(request: NextRequest) {
           process.env.NOTION_TWITTER_KEY.substring(0, 10) + '...' : 'none',
         error: errorDetails ? String(errorDetails) : null
       };
+      
+      // 追加デバッグ情報がある場合は追加
+      if (errorDetails && typeof errorDetails === 'object') {
+        responseData.debug = {
+          ...responseData.debug,
+          ...errorDetails
+        };
+      }
     }
 
     // 統計情報を含める場合
