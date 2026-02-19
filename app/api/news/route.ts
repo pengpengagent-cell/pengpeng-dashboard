@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { NewsArticle } from '../../types/news';
+import { NewsArticle } from '../../../types/news';
 
 // 開発環境: ファイルシステムからデータ取得
 // 本番環境: 環境変数からデータ取得
@@ -20,7 +20,7 @@ async function getNewsData(): Promise<NewsArticle[]> {
   
   // 開発環境: ファイルシステムから取得
   try {
-    const { getAllNews } = await import('../../lib/newsData');
+    const { getAllNews } = await import('../../../lib/newsData');
     return await getAllNews();
   } catch (error) {
     console.error('Error loading news in development:', error);
