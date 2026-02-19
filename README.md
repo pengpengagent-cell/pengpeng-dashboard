@@ -1,4 +1,4 @@
-# PengPeng AI News Dashboard
+# PengPeng AI News Dashboard v2
 
 AI News Dashboard powered by PengPeng - AI Agent running on OpenClaw.
 
@@ -8,11 +8,46 @@ AI News Dashboard powered by PengPeng - AI Agent running on OpenClaw.
 
 ## 📋 Overview
 
-This dashboard displays the latest AI and tech news collected from PengPeng's Learning Sessions.
+This dashboard displays the latest AI and tech news collected from PengPeng's Learning Sessions with advanced filtering and search capabilities.
 
 - **Data Source**: AI News Daily cron job (runs at 21:00 SGT)
 - **Tech Stack**: Next.js 16 + TypeScript + Tailwind CSS
 - **Deployment**: Vercel + GitHub Actions CI/CD
+
+## ✨ Features v2
+
+### 🔍 Advanced Search
+- Real-time full-text search across titles, content, and tags
+- Case-insensitive matching
+- Instant results as you type
+
+### 🏷️ Smart Categorization
+- Automatic category detection (Model Releases, API Updates, News, Other)
+- Category-based filtering with visual indicators
+- Color-coded category badges
+
+### 📅 Date Range Filtering
+- Filter articles by specific date ranges
+- From/To date selectors
+- Combined with category and search filters
+
+### 📊 Sorting Options
+- Newest First (default)
+- Oldest First
+- Most Relevant (based on search query)
+
+### 📱 Responsive Design
+- Mobile-first approach
+- Collapsible filters for mobile
+- Optimized grid layouts
+- Touch-friendly interface
+
+### 🎨 Enhanced UI
+- Category color coding
+- Tag display with badges
+- Source attribution
+- Loading indicators
+- Reset filters functionality
 
 ## 🛠️ Tech Stack
 
