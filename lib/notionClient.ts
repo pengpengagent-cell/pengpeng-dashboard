@@ -51,14 +51,14 @@ export async function getBookmarks(
     });
     
     // child_pageのみをフィルタリング
-    const childPages = response.results.filter(block => block.type === 'child_page');
+    const childPages = response.results.filter(block => 'type' in block && block.type === 'child_page');
     const totalChildPages = childPages.length;
     console.log(`Found ${totalChildPages} child pages`);
     
     // 最初のchild_pageのタイトルを取得
     let firstChildTitle = '';
     if (childPages.length > 0) {
-      const firstChild = childPages[0];
+      const firstChild = childPages[0] as any;
       firstChildTitle = firstChild.child_page?.title || 'No title';
       console.log(`First child page title: ${firstChildTitle}`);
     }

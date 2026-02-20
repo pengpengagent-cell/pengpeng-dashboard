@@ -257,6 +257,7 @@ export async function getRecentCronMessages(job: CronJob, limit: number = 3): Pr
           message,
           timestamp,
           status,
+          executionTime: undefined,
         });
       });
     }
