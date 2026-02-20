@@ -44,59 +44,46 @@ export async function getBookmarks(
     console.log(`Parent page ID: ${parentPageId}`);
     console.log(`Limit: ${limit}`);
     
-    // 親ページの子ブロックを取得（ページネーション対応）
-    let allPages: any[] = [];
-    let hasMore = true;
-    let startCursor: string | undefined = undefined;
-    let totalChildPages = 0;
-    let firstChildTitle = '';
-    
-    while (hasMore && allPages.length < limit) {
-      const response = await notion.blocks.children.list({
-        block_id: parentPageId,
-        start_cursor: startCursor,
-        page_size: Math.min(100, limit - allPages.length),
-      });
-      
-      allPages = [...allPages, ...response.results];
-      hasMore = response.has_more;
-      startCursor = response.next_cursor || undefined;
-      
-      // Notion APIのrate limit対策（1秒待機）
-      if (hasMore) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    }
+    // 親ページの子ブロックを取得（最新limit件のみ、ページネーションなし）
+    const response = await notion.blocks.children.list({
+      block_id: parentPageId,
+      page_size: Math.min(100, limit),
+    });
     
     // child_pageのみをフィルタリング
-    const childPages = allPages.filter(block => block.type === 'child_page');
-    totalChildPages = childPages.length;
+    const childPages = response.results.filter(block => block.type === 'child_page');
+    const totalChildPages = childPages.length;
     console.log(`Found ${totalChildPages} child pages`);
     
     // 最初のchild_pageのタイトルを取得
+    let firstChildTitle = '';
     if (childPages.length > 0) {
       const firstChild = childPages[0];
       firstChildTitle = firstChild.child_page?.title || 'No title';
       console.log(`First child page title: ${firstChildTitle}`);
     }
     
-    // 各ページの詳細情報を取得
+    // 各ページの詳細情報を取得（並列処理）
     const bookmarks: Bookmark[] = [];
-    
-    for (const page of childPages.slice(0, limit)) {
+    const pagePromises = childPages.slice(0, limit).map(async (page) => {
       try {
         // ページの詳細情報を取得
         const pageDetails = await notion.pages.retrieve({ page_id: page.id });
         
         // ページのプロパティをパース
         const bookmark = parseNotionPage(pageDetails);
-        bookmarks.push(bookmark);
-        
-        // Notion APIのrate limit対策（1秒待機）
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        return bookmark;
       } catch (error) {
         console.error(`Error fetching page ${page.id}:`, error);
-        // エラーがあっても続行
+        return null;
+      }
+    });
+    
+    // すべてのページ取得を並列実行
+    const results = await Promise.all(pagePromises);
+    for (const result of results) {
+      if (result) {
+        bookmarks.push(result);
       }
     }
     

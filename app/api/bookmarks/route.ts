@@ -37,12 +37,12 @@ export async function GET(request: NextRequest) {
         source = 'notion';
         console.log(`Attempting to fetch from Notion API with env vars: ${notionEnvVars.join(', ')}`);
         
-        // タイムアウト設定を追加
+        // タイムアウト設定を追加（Vercelのデフォルト10秒以内に収める）
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒タイムアウト
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8秒タイムアウト
         
         try {
-          const result = await getBookmarks(undefined, limit);
+          const result = await getBookmarks(undefined, Math.min(limit, 20)); // 最大20件に制限
           bookmarks = result.bookmarks;
           const debugInfo = result.debugInfo;
           console.log(`Successfully fetched ${bookmarks.length} bookmarks from Notion`);
