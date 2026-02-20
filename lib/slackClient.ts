@@ -131,28 +131,38 @@ export async function getLatestCronMessage(job: CronJob): Promise<{
     // First, try to find a message that specifically mentions this job
     const jobSpecificMessages = messages.filter(msg => {
       const text = msg.text || '';
-      const jobNameLower = job.name.toLowerCase();
-      const textLower = text.toLowerCase();
       
-      // Check for exact job name match
-      if (jobNameLower.includes('ai news') && textLower.includes('ai news')) {
-        return true;
-      }
-      if (jobNameLower.includes('workspace') && textLower.includes('workspace')) {
-        return true;
-      }
-      if (jobNameLower.includes('openclaw') && textLower.includes('openclaw')) {
-        return true;
-      }
-      if (jobNameLower.includes('morning') && textLower.includes('morning')) {
-        return true;
-      }
-      if (jobNameLower.includes('learning') && textLower.includes('learning')) {
-        return true;
-      }
+      // Job-specific patterns for each cron job
+      const jobPatterns: Record<string, RegExp[]> = {
+        'ai-news-daily': [
+          /ai news daily/i,
+          /ai-news-daily/i,
+          /✅.*ai.*news/i,
+        ],
+        'workspace-backup': [
+          /workspace backup/i,
+          /workspace-backup/i,
+          /✅.*workspace.*backup/i,
+        ],
+        'openclaw-monitor': [
+          /openclaw monitor/i,
+          /openclaw-monitor/i,
+          /✅.*openclaw.*monitor/i,
+        ],
+        'morning-report': [
+          /morning report/i,
+          /morning-report/i,
+          /✅.*morning.*report/i,
+        ],
+        'learning-session': [
+          /learning session/i,
+          /learning-session/i,
+          /✅.*learning.*session/i,
+        ],
+      };
       
-      // Generic check for job name in message
-      return textLower.includes(jobNameLower);
+      const patterns = jobPatterns[job.id] || [];
+      return patterns.some(pattern => pattern.test(text));
     });
     
     if (jobSpecificMessages.length > 0) {
@@ -186,36 +196,47 @@ export async function getRecentCronMessages(job: CronJob, limit: number = 3): Pr
   message: string;
   timestamp: string;
   status: 'success' | 'failure' | 'unknown';
-  executionTime?: number;
+  executionTime?: number | null;
 }>> {
   try {
     const messages = await getChannelHistory(job.channel, 30); // Get more messages to filter
     
-    // Filter messages that mention this job
+    // Filter messages that mention this job with more precise matching
     const jobSpecificMessages = messages.filter(msg => {
       const text = msg.text || '';
-      const jobNameLower = job.name.toLowerCase();
       const textLower = text.toLowerCase();
       
-      // Check for exact job name match
-      if (jobNameLower.includes('ai news') && textLower.includes('ai news')) {
-        return true;
-      }
-      if (jobNameLower.includes('workspace') && textLower.includes('workspace')) {
-        return true;
-      }
-      if (jobNameLower.includes('openclaw') && textLower.includes('openclaw')) {
-        return true;
-      }
-      if (jobNameLower.includes('morning') && textLower.includes('morning')) {
-        return true;
-      }
-      if (jobNameLower.includes('learning') && textLower.includes('learning')) {
-        return true;
-      }
+      // Job-specific patterns for each cron job
+      const jobPatterns: Record<string, RegExp[]> = {
+        'ai-news-daily': [
+          /ai news daily/i,
+          /ai-news-daily/i,
+          /✅.*ai.*news/i,
+        ],
+        'workspace-backup': [
+          /workspace backup/i,
+          /workspace-backup/i,
+          /✅.*workspace.*backup/i,
+        ],
+        'openclaw-monitor': [
+          /openclaw monitor/i,
+          /openclaw-monitor/i,
+          /✅.*openclaw.*monitor/i,
+        ],
+        'morning-report': [
+          /morning report/i,
+          /morning-report/i,
+          /✅.*morning.*report/i,
+        ],
+        'learning-session': [
+          /learning session/i,
+          /learning-session/i,
+          /✅.*learning.*session/i,
+        ],
+      };
       
-      // Generic check for job name in message
-      return textLower.includes(jobNameLower);
+      const patterns = jobPatterns[job.id] || [];
+      return patterns.some(pattern => pattern.test(text));
     });
     
     // Take the most recent ones (up to limit)
@@ -228,7 +249,7 @@ export async function getRecentCronMessages(job: CronJob, limit: number = 3): Pr
       const status = parseSlackMessage(message);
       
       // Try to extract execution time from message
-      let executionTime: number | undefined;
+      let executionTime: number | null = null;
       const timeMatch = message.match(/(\d+\.?\d*)\s*(秒|s|sec|seconds)/i);
       if (timeMatch) {
         executionTime = parseFloat(timeMatch[1]);

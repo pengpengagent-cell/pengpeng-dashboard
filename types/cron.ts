@@ -12,7 +12,7 @@ export interface CronRun {
   status: 'success' | 'failure' | 'unknown';
   duration?: number; // in seconds
   message?: string;
-  executionTime?: number; // in seconds
+  executionTime?: number | null; // in seconds, null if not available
 }
 
 export interface CronStatus {

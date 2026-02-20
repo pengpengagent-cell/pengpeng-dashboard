@@ -94,7 +94,7 @@ async function getCronJobStatus(job: CronJob): Promise<CronStatus> {
       timestamp,
       status: msg.status,
       message: msg.message,
-      executionTime: msg.executionTime,
+      executionTime: msg.executionTime ?? null, // Use null instead of undefined
     };
   });
   
