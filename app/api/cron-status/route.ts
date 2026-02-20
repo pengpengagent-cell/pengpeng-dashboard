@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAllCronJobs, CronJob, CronStatus } from '../../../types/cron';
-import { getLatestCronMessage } from '../../../lib/slackClient';
+import { getLatestCronMessage, getRecentCronMessages } from '../../../lib/slackClient';
 
 // Calculate next run time from cron expression
 export function calculateNextRun(cronExpression: string, timezone: string): string | null {
@@ -64,6 +64,7 @@ function calculateUptime(jobId: string): number {
 // Get status for a single cron job
 async function getCronJobStatus(job: CronJob): Promise<CronStatus> {
   const latestMessage = await getLatestCronMessage(job);
+  const recentMessages = await getRecentCronMessages(job, 3);
   
   let lastRunStatus: CronStatus['lastRun'] = {
     timestamp: null,
@@ -83,12 +84,27 @@ async function getCronJobStatus(job: CronJob): Promise<CronStatus> {
     };
   }
   
+  // Process recent runs
+  const recentRuns = recentMessages.map(msg => {
+    const timestamp = msg.timestamp 
+      ? new Date(parseFloat(msg.timestamp) * 1000).toISOString()
+      : null;
+    
+    return {
+      timestamp,
+      status: msg.status,
+      message: msg.message,
+      executionTime: msg.executionTime,
+    };
+  });
+  
   const nextRun = calculateNextRun(job.schedule, job.timezone);
   const uptime = calculateUptime(job.id);
   
   return {
     jobId: job.id,
     lastRun: lastRunStatus,
+    recentRuns,
     nextRun,
     uptime,
   };

@@ -7,14 +7,18 @@ export interface CronJob {
   timezone: string; // e.g., 'Asia/Singapore'
 }
 
+export interface CronRun {
+  timestamp: string | null;
+  status: 'success' | 'failure' | 'unknown';
+  duration?: number; // in seconds
+  message?: string;
+  executionTime?: number; // in seconds
+}
+
 export interface CronStatus {
   jobId: string;
-  lastRun: {
-    timestamp: string | null;
-    status: 'success' | 'failure' | 'unknown';
-    duration?: number; // in seconds
-    message?: string;
-  };
+  lastRun: CronRun;
+  recentRuns: CronRun[]; // Last 3 runs
   nextRun: string | null;
   uptime: number; // percentage (0-100)
 }

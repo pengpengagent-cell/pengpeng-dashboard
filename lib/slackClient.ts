@@ -180,3 +180,90 @@ export async function getLatestCronMessage(job: CronJob): Promise<{
     return null;
   }
 }
+
+// Get recent 3 messages for a cron job
+export async function getRecentCronMessages(job: CronJob, limit: number = 3): Promise<Array<{
+  message: string;
+  timestamp: string;
+  status: 'success' | 'failure' | 'unknown';
+  executionTime?: number;
+}>> {
+  try {
+    const messages = await getChannelHistory(job.channel, 30); // Get more messages to filter
+    
+    // Filter messages that mention this job
+    const jobSpecificMessages = messages.filter(msg => {
+      const text = msg.text || '';
+      const jobNameLower = job.name.toLowerCase();
+      const textLower = text.toLowerCase();
+      
+      // Check for exact job name match
+      if (jobNameLower.includes('ai news') && textLower.includes('ai news')) {
+        return true;
+      }
+      if (jobNameLower.includes('workspace') && textLower.includes('workspace')) {
+        return true;
+      }
+      if (jobNameLower.includes('openclaw') && textLower.includes('openclaw')) {
+        return true;
+      }
+      if (jobNameLower.includes('morning') && textLower.includes('morning')) {
+        return true;
+      }
+      if (jobNameLower.includes('learning') && textLower.includes('learning')) {
+        return true;
+      }
+      
+      // Generic check for job name in message
+      return textLower.includes(jobNameLower);
+    });
+    
+    // Take the most recent ones (up to limit)
+    const recentMessages = jobSpecificMessages.slice(0, limit);
+    
+    // Parse each message
+    const parsedMessages = recentMessages.map(msg => {
+      const message = msg.text || '';
+      const timestamp = msg.ts || '';
+      const status = parseSlackMessage(message);
+      
+      // Try to extract execution time from message
+      let executionTime: number | undefined;
+      const timeMatch = message.match(/(\d+\.?\d*)\s*(秒|s|sec|seconds)/i);
+      if (timeMatch) {
+        executionTime = parseFloat(timeMatch[1]);
+      }
+      
+      return {
+        message,
+        timestamp,
+        status,
+        executionTime,
+      };
+    });
+    
+    // If we don't have enough job-specific messages, add generic messages
+    if (parsedMessages.length < limit && messages.length > 0) {
+      const genericMessages = messages
+        .filter(msg => !jobSpecificMessages.includes(msg))
+        .slice(0, limit - parsedMessages.length);
+      
+      genericMessages.forEach(msg => {
+        const message = msg.text || '';
+        const timestamp = msg.ts || '';
+        const status = parseSlackMessage(message);
+        
+        parsedMessages.push({
+          message,
+          timestamp,
+          status,
+        });
+      });
+    }
+    
+    return parsedMessages;
+  } catch (error) {
+    console.error(`Error getting recent messages for ${job.name}:`, error);
+    return [];
+  }
+}
