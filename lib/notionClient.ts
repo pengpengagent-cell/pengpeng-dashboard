@@ -51,7 +51,10 @@ export async function getBookmarks(
     });
     
     // child_pageのみをフィルタリング
-    const childPages = response.results.filter(block => 'type' in block && block.type === 'child_page');
+    const childPages = response.results.filter(block => {
+      const blockType = (block as any).type;
+      return blockType === 'child_page';
+    });
     const totalChildPages = childPages.length;
     console.log(`Found ${totalChildPages} child pages`);
     
@@ -86,6 +89,13 @@ export async function getBookmarks(
         bookmarks.push(result);
       }
     }
+    
+    // created_timeで降順ソート（新しい順）
+    bookmarks.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA; // 降順
+    });
     
     return {
       bookmarks,

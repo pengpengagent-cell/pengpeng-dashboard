@@ -27,14 +27,29 @@ export function parseNotionPage(page: any): Bookmark {
   const properties = page.properties || {};
   
   // プロパティの抽出（Notionのプロパティ構造に基づく）
-  const url = properties.URL?.url || '';
-  const title = properties.Title?.title?.[0]?.plain_text || 'No title';
-  const tags = properties.Tags?.multi_select?.map((tag: any) => tag.name) || [];
+  // タイトル: properties.title または properties.Title をチェック
+  const title = properties.title?.title?.[0]?.plain_text || 
+                properties.Title?.title?.[0]?.plain_text || 
+                'No title';
+  
+  // URL: properties.URL または properties.url をチェック
+  const url = properties.URL?.url || properties.url?.url || '';
+  
+  // タグ: properties.Tags または properties.tags をチェック
+  const tags = properties.Tags?.multi_select?.map((tag: any) => tag.name) || 
+               properties.tags?.multi_select?.map((tag: any) => tag.name) || 
+               [];
+  
   const createdAt = page.created_time || new Date().toISOString();
   
   // 分析結果の抽出（Notionのプロパティ構造に基づく）
-  const analysisText = properties.Analysis?.rich_text?.[0]?.plain_text || '';
-  const category = properties.Category?.select?.name || 'uncategorized';
+  const analysisText = properties.Analysis?.rich_text?.[0]?.plain_text || 
+                       properties.analysis?.rich_text?.[0]?.plain_text || 
+                       '';
+  
+  const category = properties.Category?.select?.name || 
+                   properties.category?.select?.name || 
+                   'uncategorized';
   
   // 分析結果のパース（Geminiの出力形式を想定）
   let summary = '';
@@ -61,6 +76,15 @@ export function parseNotionPage(page: any): Bookmark {
     }
   }
   
+  // 著者とツイートIDの抽出
+  const author = properties.Author?.rich_text?.[0]?.plain_text || 
+                 properties.author?.rich_text?.[0]?.plain_text || 
+                 '';
+  
+  const tweetId = properties.TweetID?.rich_text?.[0]?.plain_text || 
+                  properties.tweetId?.rich_text?.[0]?.plain_text || 
+                  '';
+  
   return {
     id: page.id,
     url,
@@ -74,8 +98,8 @@ export function parseNotionPage(page: any): Bookmark {
       keyPoints
     } : undefined,
     source: 'X (Twitter)',
-    author: properties.Author?.rich_text?.[0]?.plain_text || '',
-    tweetId: properties.TweetID?.rich_text?.[0]?.plain_text || '',
+    author,
+    tweetId,
   };
 }
 
