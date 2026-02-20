@@ -13,19 +13,51 @@ const MOCK_SLACK_MESSAGES: Record<string, any[]> = {
       text: '✅ Learning Session — 2026-02-19 14:00 UTC\n最新のAIニュースを分析しました。',
       ts: '1771510000.000000',
     },
+    {
+      text: '✅ Learning Session — 2026-02-19 10:00 UTC\n学習セッション完了。',
+      ts: '1771510100.000000',
+    },
+    {
+      text: '✅ Learning Session — 2026-02-19 06:00 UTC\n学習セッション完了。',
+      ts: '1771510200.000000',
+    },
   ],
-  'C0AEZV4RR0V': [ // #ai-news
+  'C0AEZV4RR0V': [ // #ai-news (multiple jobs post to this channel)
     {
       text: '✅ AI News Daily — 2026-02-19 13:00 UTC\nIndia AI Summit 2026 Day 4のニュースを収集しました。',
       ts: '1771508000.000000',
+    },
+    {
+      text: '✅ AI News Daily — 2026-02-18 13:00 UTC\nAI News Daily完了。',
+      ts: '1771508010.000000',
+    },
+    {
+      text: '✅ AI News Daily — 2026-02-17 13:00 UTC\nAI News Daily完了。',
+      ts: '1771508020.000000',
     },
     {
       text: '✅ Workspace Backup — 2026-02-19 15:00 UTC\nワークスペースのバックアップが完了しました。',
       ts: '1771512000.000000',
     },
     {
+      text: '✅ Workspace Backup — 2026-02-18 15:00 UTC\nWorkspace Backup完了。',
+      ts: '1771512010.000000',
+    },
+    {
+      text: '✅ Workspace Backup — 2026-02-17 15:00 UTC\nWorkspace Backup完了。',
+      ts: '1771512020.000000',
+    },
+    {
       text: '✅ OpenClaw Monitor — 2026-02-19 13:20 UTC\nOpenClaw稼働状況正常。',
       ts: '1771509000.000000',
+    },
+    {
+      text: '✅ OpenClaw Monitor — 2026-02-18 13:20 UTC\nOpenClaw Monitor完了。',
+      ts: '1771509010.000000',
+    },
+    {
+      text: '✅ OpenClaw Monitor — 2026-02-17 13:20 UTC\nOpenClaw Monitor完了。',
+      ts: '1771509020.000000',
     },
   ],
 };
