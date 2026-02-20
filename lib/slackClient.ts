@@ -239,7 +239,7 @@ export async function getRecentCronMessages(job: CronJob, limit: number = 3): Pr
       return patterns.some(pattern => pattern.test(text));
     });
     
-    // Take the most recent ones (up to limit)
+    // Take the most recent job-specific ones (up to limit)
     const recentMessages = jobSpecificMessages.slice(0, limit);
     
     // Parse each message
@@ -262,26 +262,6 @@ export async function getRecentCronMessages(job: CronJob, limit: number = 3): Pr
         executionTime,
       };
     });
-    
-    // If we don't have enough job-specific messages, add generic messages
-    if (parsedMessages.length < limit && messages.length > 0) {
-      const genericMessages = messages
-        .filter(msg => !jobSpecificMessages.includes(msg))
-        .slice(0, limit - parsedMessages.length);
-      
-      genericMessages.forEach(msg => {
-        const message = msg.text || '';
-        const timestamp = msg.ts || '';
-        const status = parseSlackMessage(message);
-        
-        parsedMessages.push({
-          message,
-          timestamp,
-          status,
-          executionTime: undefined,
-        });
-      });
-    }
     
     return parsedMessages;
   } catch (error) {
