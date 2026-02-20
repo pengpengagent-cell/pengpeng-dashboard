@@ -36,6 +36,8 @@ export async function getBookmarks(
     console.log(`Fetching bookmarks from parent page: ${parentPageId}`);
     
     if (!notion) {
+      console.error('Notion client not initialized - check NOTION_TWITTER_KEY environment variable');
+      console.error('Available NOTION env vars:', Object.keys(process.env).filter(k => k.includes('NOTION')));
       throw new Error('Notion client not initialized - check NOTION_TWITTER_KEY environment variable');
     }
     
