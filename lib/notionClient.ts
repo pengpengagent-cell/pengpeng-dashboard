@@ -137,23 +137,46 @@ export async function getBookmarks(
     };
   } catch (error) {
     console.error('Error fetching bookmarks from Notion:', error);
-    console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error);
-    console.error('Error message:', error instanceof Error ? error.message : String(error));
     
-    // より詳細なエラー情報を提供
+    // 詳細なエラー情報を構造化
+    const errorInfo: any = {
+      timestamp: new Date().toISOString(),
+      parentPageId,
+    };
+    
     if (error instanceof Error) {
+      errorInfo.name = error.name;
+      errorInfo.message = error.message;
+      errorInfo.stack = error.stack?.split('\n').slice(0, 3).join('\n');
+      
+      // エラータイプに基づく分類
       if (error.message.includes('API token') || error.message.includes('unauthorized')) {
-        console.error('API token error - check NOTION_TWITTER_KEY environment variable');
+        errorInfo.type = 'AUTH_ERROR';
+        errorInfo.suggestion = 'Check NOTION_TWITTER_KEY environment variable';
       } else if (error.message.includes('permission') || error.message.includes('access')) {
-        console.error('Permission error - check if the integration has access to the page');
+        errorInfo.type = 'PERMISSION_ERROR';
+        errorInfo.suggestion = 'Check if the integration has access to the page';
       } else if (error.message.includes('rate limit') || error.message.includes('429')) {
-        console.error('Rate limit exceeded');
+        errorInfo.type = 'RATE_LIMIT_ERROR';
+        errorInfo.suggestion = 'Rate limit exceeded, wait before retrying';
       } else if (error.message.includes('not_found')) {
-        console.error('Page not found - check parent page ID');
+        errorInfo.type = 'NOT_FOUND_ERROR';
+        errorInfo.suggestion = 'Check parent page ID';
+      } else if (error.message.includes('timeout') || error.name === 'AbortError') {
+        errorInfo.type = 'TIMEOUT_ERROR';
+        errorInfo.suggestion = 'Notion API request timed out';
+      } else {
+        errorInfo.type = 'UNKNOWN_ERROR';
       }
+    } else {
+      errorInfo.type = 'NON_ERROR_OBJECT';
+      errorInfo.rawError = String(error);
     }
     
-    throw error;
+    console.error('Structured error info:', JSON.stringify(errorInfo, null, 2));
+    
+    // エラーを再スロー（呼び出し元で処理）
+    throw new Error(`Notion API error: ${errorInfo.type} - ${errorInfo.message || 'Unknown error'}`);
   }
 }
 
