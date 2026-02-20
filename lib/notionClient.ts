@@ -46,31 +46,58 @@ export async function getBookmarks(
     console.log(`Parent page ID: ${parentPageId}`);
     console.log(`Limit: ${limit}`);
     
-    // 親ページの子ブロックを取得（最新limit件のみ、ページネーションなし）
-    const response = await notion.blocks.children.list({
-      block_id: parentPageId,
-      page_size: Math.min(100, limit),
+    // すべてのchild_pageを取得（ページネーション対応）
+    let allChildPages: any[] = [];
+    let cursor: string | undefined = undefined;
+    let hasMore = true;
+    let totalFetched = 0;
+    
+    while (hasMore && totalFetched < 500) { // 安全のため最大500件
+      const response = await notion.blocks.children.list({
+        block_id: parentPageId,
+        page_size: 100,
+        start_cursor: cursor,
+      });
+      
+      // child_pageのみをフィルタリング
+      const childPages = response.results.filter(block => {
+        const blockType = (block as any).type;
+        return blockType === 'child_page';
+      });
+      
+      allChildPages.push(...childPages);
+      totalFetched += response.results.length;
+      
+      hasMore = response.has_more;
+      cursor = response.next_cursor || undefined;
+      
+      console.log(`Fetched ${childPages.length} child pages (total: ${allChildPages.length}), has_more: ${hasMore}`);
+    }
+    
+    const totalChildPages = allChildPages.length;
+    console.log(`Found ${totalChildPages} child pages in total`);
+    
+    // created_timeで降順ソート（新しい順）
+    allChildPages.sort((a, b) => {
+      const timeA = new Date(a.created_time || 0).getTime();
+      const timeB = new Date(b.created_time || 0).getTime();
+      return timeB - timeA; // 降順
     });
     
-    // child_pageのみをフィルタリング
-    const childPages = response.results.filter(block => {
-      const blockType = (block as any).type;
-      return blockType === 'child_page';
-    });
-    const totalChildPages = childPages.length;
-    console.log(`Found ${totalChildPages} child pages`);
+    // limit件に制限
+    const limitedChildPages = allChildPages.slice(0, limit);
     
     // 最初のchild_pageのタイトルを取得
     let firstChildTitle = '';
-    if (childPages.length > 0) {
-      const firstChild = childPages[0] as any;
+    if (limitedChildPages.length > 0) {
+      const firstChild = limitedChildPages[0] as any;
       firstChildTitle = firstChild.child_page?.title || 'No title';
-      console.log(`First child page title: ${firstChildTitle}`);
+      console.log(`First child page title: ${firstChildTitle}, created: ${firstChild.created_time}`);
     }
     
     // 各ページの詳細情報を取得（並列処理）
     const bookmarks: Bookmark[] = [];
-    const pagePromises = childPages.slice(0, limit).map(async (page) => {
+    const pagePromises = limitedChildPages.map(async (page) => {
       try {
         // ページの詳細情報を取得
         const pageDetails = await notion.pages.retrieve({ page_id: page.id });
