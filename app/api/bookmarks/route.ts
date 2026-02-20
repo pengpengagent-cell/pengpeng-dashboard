@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
         notionKeyExists: !!process.env.NOTION_TWITTER_KEY,
         notionKeyPrefix: process.env.NOTION_TWITTER_KEY ? 
           process.env.NOTION_TWITTER_KEY.substring(0, 10) + '...' : 'none',
-        error: errorDetails ? String(errorDetails) : null
+        error: errorDetails ? (typeof errorDetails === 'object' ? JSON.stringify(errorDetails) : String(errorDetails)) : null
       };
       
       // 追加デバッグ情報がある場合は追加
